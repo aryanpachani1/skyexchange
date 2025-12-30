@@ -1,47 +1,179 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Market Load Panel (Demo)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exchange Panel – Betfair Style (Demo)</title>
+
+<!-- ========== STYLE ========== -->
 <style>
-body{font-family:Arial;background:#0f172a;color:#fff}
-.card{background:#020617;padding:12px;border-radius:10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{padding:8px 12px;border-radius:6px;background:#2563eb;color:#fff;border:0}
+:root{
+  --bg:#0b1220;
+  --panel:#111827;
+  --border:#1f2933;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --back:#4fc3f7;
+  --lay:#f48fb1;
+  --accent:#22c55e;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);color:var(--text);
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  height:56px;background:#020617;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+}
+.logo{font-weight:700;letter-spacing:.5px}
+.balance{color:var(--accent);font-weight:600}
+
+/* ===== LAYOUT ===== */
+.wrapper{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  background:#020617;border-right:1px solid var(--border);padding:12px
+}
+.sidebar h4{margin:8px 0 6px;color:#93c5fd;font-size:13px}
+.sidebar button{
+  width:100%;margin:6px 0;padding:8px;border-radius:6px;border:1px solid var(--border);
+  background:#020617;color:var(--text);cursor:pointer
+}
+.sidebar button:hover{background:#111827}
+
+/* ===== MAIN ===== */
+.main{padding:14px}
+.match-header{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:12px;margin-bottom:12px
+}
+.match-title{font-weight:700}
+.meta{color:var(--muted);font-size:12px;margin-top:4px}
+
+/* ===== MARKET GRID ===== */
+.market{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden
+}
+.market-head{
+  display:grid;grid-template-columns:1.5fr repeat(6,1fr);
+  background:#020617;border-bottom:1px solid var(--border)
+}
+.market-head div{padding:8px;font-size:12px;color:var(--muted);text-align:center}
+.market-head div:first-child{text-align:left}
+
+.row{
+  display:grid;grid-template-columns:1.5fr repeat(6,1fr);
+  border-bottom:1px solid var(--border)
+}
+.row:last-child{border-bottom:0}
+.row div{padding:8px;text-align:center}
+.row .runner{text-align:left;font-weight:600}
+
+.back{background:rgba(79,195,247,.18)}
+.lay{background:rgba(244,143,177,.18)}
+.odds{font-weight:700}
+.money{font-size:12px;color:#e5e7eb}
+
+/* ===== LOAD PANEL ===== */
+.load{
+  margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px
+}
+.load .card{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  padding:10px
+}
+.card b{font-size:13px}
+.card span{display:block;margin-top:6px;font-size:18px;font-weight:700}
+
+.signal{color:#22c55e}
+.warning{color:#facc15}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  .wrapper{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .market-head,.row{grid-template-columns:1.3fr repeat(6,1fr)}
+}
 </style>
 </head>
+
 <body>
 
-
-<h2>Skyexchange‑Style Market Panel (Demo)</h2>
-
-
-<div class="card">
-<b>Manual Market Input</b><br><br>
-Team A Back: <input id="aBack" type="number" value="12000">
-Team B Back: <input id="bBack" type="number" value="8000">
-<br><br>
-<button class="btn" onclick="calc()">Analyze Load</button>
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <div class="logo">EXCHANGE PANEL</div>
+  <div class="balance">Balance: ₹10,000</div>
 </div>
 
+<div class="wrapper">
 
-<br>
-<div class="card" id="out"></div>
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <h4>MARKETS</h4>
+  <button>Match Odds</button>
+  <button>Bookmaker</button>
+  <button>Session</button>
 
+  <h4>TOOLS</h4>
+  <button>Hedge Calculator</button>
+  <button>Exposure</button>
+</div>
 
-<script>
-function calc(){
-let a=+aBack.value,b=+bBack.value;
-let t=a+b;
-let ap=((a/t)*100).toFixed(1);
-let bp=((b/t)*100).toFixed(1);
-out.innerHTML=`
-Team A Load: ${ap}%<br>
-Team B Load: ${bp}%<br>
-Bookie Bias: ${ap>60?'Team B (+)':'Neutral'}
-`;
-}
-</script>
+<!-- ===== MAIN ===== -->
+<div class="main">
 
+  <div class="match-header">
+    <div class="match-title">Team A vs Team B</div>
+    <div class="meta">Live • Total Matched ₹12.4L</div>
+  </div>
+
+  <div class="market">
+
+    <div class="market-head">
+      <div>Runner</div>
+      <div colspan="3">BACK</div>
+      <div colspan="3">LAY</div>
+    </div>
+
+    <!-- ROW 1 -->
+    <div class="row">
+      <div class="runner">Team A</div>
+      <div class="back"><div class="odds">1.78</div><div class="money">45k</div></div>
+      <div class="back"><div class="odds">1.79</div><div class="money">32k</div></div>
+      <div class="back"><div class="odds">1.80</div><div class="money">21k</div></div>
+      <div class="lay"><div class="odds">1.81</div><div class="money">18k</div></div>
+      <div class="lay"><div class="odds">1.82</div><div class="money">14k</div></div>
+      <div class="lay"><div class="odds">1.83</div><div class="money">9k</div></div>
+    </div>
+
+    <!-- ROW 2 -->
+    <div class="row">
+      <div class="runner">Team B</div>
+      <div class="back"><div class="odds">2.10</div><div class="money">28k</div></div>
+      <div class="back"><div class="odds">2.12</div><div class="money">19k</div></div>
+      <div class="back"><div class="odds">2.14</div><div class="money">11k</div></div>
+      <div class="lay"><div class="odds">2.16</div><div class="money">16k</div></div>
+      <div class="lay"><div class="odds">2.18</div><div class="money">12k</div></div>
+      <div class="lay"><div class="odds">2.20</div><div class="money">7k</div></div>
+    </div>
+
+  </div>
+
+  <!-- LOAD / SIGNALS -->
+  <div class="load">
+    <div class="card"><b>Team A Load</b><span>62%</span></div>
+    <div class="card"><b>Team B Load</b><span>38%</span></div>
+    <div class="card"><b>Bookie Bias</b><span class="signal">Team B +</span></div>
+    <div class="card"><b>Market Move</b><span class="warning">Stable</span></div>
+  </div>
+
+</div>
+</div>
 
 </body>
 </html>
